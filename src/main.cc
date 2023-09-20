@@ -1,27 +1,44 @@
 #include "iostream"
 
 #include "vector"
+#include "Board.hh"
 
-void drawBoard(std::vector<std::vector<char>> values) {
-    int line = 0;
-    for (int i = 0; i <= 3+1; i++) {
-        if (i % 2 == 0) {
-            std::cout << values[line][0] << " # " << values[line][1] << " # " << values[line][2] << std::endl; //TODO: Make Scalable
-            line++;
-        } else
-            std::cout << "#########" << std::endl;
-    }
 
-}
 
 int main() {
-    //TODO: Draw Board
-    // TODO: Create Board
-    std::vector<std::vector<char>> board = {{'X', 'O', 'X'},
-                                            {'X', 'X', 'X'},
-                                            {'X', 'O', 'O'}};
+
+    Board board = Board(3);
+
+    int xCord;
+    int yCord;
+
+    bool gameIsOver = false;
+
+    while (!gameIsOver) {
+        board.drawBoard();
+
+        std::cout << "Give the top coordinate of the board: " << std::endl;
+        std::cin >> yCord;
 
 
-    drawBoard(board);
+        std::cout << "Give the side coordinate of the board: " << std::endl;
+        std::cin >> xCord;
+
+
+
+        if (board.set(xCord, yCord)) {
+
+            if (board.isGameOver(xCord, yCord))
+                gameIsOver = true;
+            continue;
+        }
+
+        std::cout << "Not crashed " << std::endl;
+
+
+        // TODO: Make idiot proof.
+    }
+
+
 
 }
