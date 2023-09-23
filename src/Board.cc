@@ -4,9 +4,22 @@
 Board::Board(int size) {
     amountOfMoves = 0;
     boardSize = size;
-    gameBoard = {{BoardValue::empty, BoardValue::empty, BoardValue::empty},
-                 {BoardValue::empty, BoardValue::empty, BoardValue::empty},
-                 {BoardValue::empty, BoardValue::empty, BoardValue::empty}};
+    gameBoard = {};
+            //{{BoardValue::empty, BoardValue::empty, BoardValue::empty},
+              //   {BoardValue::empty, BoardValue::empty, BoardValue::empty},
+              //   {BoardValue::empty, BoardValue::empty, BoardValue::empty}};
+
+    for (int y = 0; y < size; y++) {
+        gameBoard.emplace_back();
+    }
+
+    for (int y = 0; y < size; y++) {
+        for (int x = 0; x < size; x++) {
+            gameBoard[y].push_back(BoardValue::empty);
+        }
+    }
+
+
 }
 
 
@@ -24,7 +37,7 @@ void Board::drawBoard() {
 }
 
 bool Board::set(int x, int y, BoardValue player) {
-    if (y > 3 || x > 3 || y < 0 || x < 0) {
+    if (y > boardSize || x > boardSize || y < 0 || x < 0) {
         std::cerr << "Out of bounds(Try again)" << std::endl;
         return false;
     }
@@ -39,7 +52,6 @@ bool Board::set(int x, int y, BoardValue player) {
     return true;
 
 }
-
 
 GameWinner Board::isGameOver() {
     if (checkDiagonals() != GameWinner::none)
@@ -72,7 +84,7 @@ GameWinner Board::checkDiagonals() {
     }
 
     for (int i = boardSize-1; i > 0; i--) { // 1
-        if (gameBoard[2-i][i] != gameBoard[(2-i)+1][i-1] || gameBoard[2-i][i] == BoardValue::empty)
+        if (gameBoard[(boardSize-1)-i][i] != gameBoard[((boardSize-1)-i)+1][i-1] || gameBoard[(boardSize-1)-i][i] == BoardValue::empty)
             break;
 
         if (i == boardSize - 2)

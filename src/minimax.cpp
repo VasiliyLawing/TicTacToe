@@ -13,8 +13,8 @@ Minimax::Minimax(Board* gameBoard, BoardValue AIValue) {
 void Minimax::bestMove() {
     int bestScore = -1000;
     std::vector<int> bestMove = {1, 1};
-    for (int y = 0; y < 3; y++) {
-        for (int x = 0; x < 3; x++) {
+    for (int y = 0; y < board->boardSize; y++) {
+        for (int x = 0; x < board->boardSize; x++) {
             if (board->gameBoard[y][x] == BoardValue::empty) {
                 board->gameBoard[y][x] = value;
                 int score = minimax(0, false);
@@ -41,8 +41,8 @@ int Minimax::minimax(int depth, bool isMaximizing) {
 
     if (isMaximizing) {
         int bestScore = -1000;
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 3; x++) {
+        for (int y = 0; y < board->boardSize; y++) {
+            for (int x = 0; x < board->boardSize; x++) {
                 if (board->gameBoard[y][x] == BoardValue::empty) {
                     board->gameBoard[y][x] = value;
 
@@ -56,9 +56,8 @@ int Minimax::minimax(int depth, bool isMaximizing) {
         return bestScore;
     } else {
         int bestScore = 1000;
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 3; x++) {
-
+        for (int y = 0; y < board->boardSize; y++) {
+            for (int x = 0; x < board->boardSize; x++) {
                 if (board->gameBoard[y][x] == BoardValue::empty) {
                     board->gameBoard[y][x] = playerValue;
 
