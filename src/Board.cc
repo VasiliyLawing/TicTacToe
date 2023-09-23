@@ -4,32 +4,36 @@
 Board::Board(int size) {
     amountOfMoves = 0;
     boardSize = size;
+    gameBoard = {{BoardValue::empty, BoardValue::empty, BoardValue::empty},
+                 {BoardValue::empty, BoardValue::empty, BoardValue::empty},
+                 {BoardValue::empty, BoardValue::empty, BoardValue::empty}};
 }
 
 
 void Board::drawBoard() {
-    int line = 0;
-    std::cout << "  1   2   3" << std::endl;
-    for (int i = 0; i <= 3+1; i++) {
-        if (i % 2 == 0) {
-            std::cout << line+1 << " " << (char)board[line][0] << " # " << (char)board[line][1] << " # " << (char)board[line][2] << std::endl; //TODO: Make Scalable
-            line++;
-        } else
-            std::cout << "  #########" << std::endl;
+    for (int y = 0; y < boardSize; y++) {
+        for (int x = 0; x < boardSize; x++) {
+            std::cout <<  " " << (char)gameBoard[y][x] << " ";
+
+            if (x == boardSize - 1) {
+                std::cout << "\n";
+            }
+        }
     }
+
 }
 
 bool Board::set(int x, int y, BoardValue player) {
-    if (y > 3 || x > 3 || y <= 0 || x <= 0) {
+    if (y > 3 || x > 3 || y < 0 || x < 0) {
         std::cerr << "Out of bounds(Try again)" << std::endl;
         return false;
     }
-    if (board[x-1][y-1] != BoardValue::empty) { // TODO: Throw Exceptions in future
+    if (gameBoard[y - 1][x - 1] != BoardValue::empty) { // TODO: Throw Exceptions in future
         std::cerr << "Position Already Filled(Try again)" << std::endl;
         return false;
     }
 
-    board[x-1][y-1] = player;
+    gameBoard[y - 1][x - 1] = player;
 
     amountOfMoves++;
     return true;
@@ -37,92 +41,76 @@ bool Board::set(int x, int y, BoardValue player) {
 }
 
 
-void Board::bestMove() {
+GameWinner Board::isGameOver() {
+    if (checkDiagonals() != GameWinner::none)
+        return checkDiagonals();
 
-    int bestScore = -1000;
-    std::vector<int> bestMove = {1, 1};
-    for (int x = 0; x < 3; x++) {
-        for (int y = 0; y < 3; y++) {
-            if (board[x][y] == BoardValue::empty) {
-                board[x][y] = BoardValue::O;
-                int score = minimax(0, false);
-                board[x][y] = BoardValue::empty;
+    if (checkColumns() != GameWinner::none)
+        return checkColumns();
 
-                if (score > bestScore) {
-                    bestScore = score;
-                    bestMove = {x+1, y+1};
-                }
-            }
+    if (checkRows() != GameWinner::none)
+        return checkRows();
+
+    for(int y=0; y<= boardSize - 1; y++) {
+        for(int x=0; x<= boardSize-1; x++) {
+
+            if(gameBoard[y][x]==BoardValue::empty)
+                return GameWinner::none;
 
         }
     }
-    std::cout << "Test" << std::endl;
-    set(bestMove[0], bestMove[1], BoardValue::O);
+    return GameWinner::draw;
 }
 
-int Board::minimax(int depth, bool isMaximizing) {
-    GameWinner result = isGameOver();
+GameWinner Board::checkDiagonals() {
 
-    if (result != GameWinner::none) {
-        return (int)result;
+    for (int i = 0; i < boardSize-1; i++) {
+        if (gameBoard[i][i] != gameBoard[i + 1][i + 1] || gameBoard[i][i] == BoardValue::empty)
+            break;
+        if (i == boardSize - 2)
+            return convertBoardValue(gameBoard[i][i]);
     }
 
-    if (isMaximizing) {
-        int bestScore = -1000;
-        for (int x = 0; x < 3; x++) {
-            for (int y = 0; y < 3; y++) {
-                if (board[x][y] == BoardValue::empty) {
-                    board[x][y] = BoardValue::O;
+    for (int i = boardSize-1; i > 0; i--) { // 1
+        if (gameBoard[2-i][i] != gameBoard[(2-i)+1][i-1] || gameBoard[2-i][i] == BoardValue::empty)
+            break;
 
-                    bestScore = std::max(bestScore, minimax(depth+1, false));
-
-                    board[x][y] = BoardValue::empty;
-
-                }
-            }
-        }
-        return bestScore;
-    } else {
-        int bestScore = 1000;
-        for (int x = 0; x < 3; x++) {
-            for (int y = 0; y < 3; y++) {
-
-                if (board[x][y] == BoardValue::empty) {
-                    board[x][y] = BoardValue::X;
-
-                    bestScore = std::min(bestScore, minimax( depth+1, true));
-
-                    board[x][y] = BoardValue::empty;
-                }
-            }
-        }
-        return bestScore;
+        if (i == boardSize - 2)
+            return convertBoardValue(gameBoard[0][boardSize - 1]);
     }
-
-
+    return GameWinner::none;
 }
 
-void Board::turns() {
-    int x;
-    int y;
+GameWinner Board::checkColumns() {
+    for (int x = 0; x < boardSize; x++) {
+        for (int y = 0; y < boardSize-1; y++) {
+            if (gameBoard[y][x] != gameBoard[y+1][x] || gameBoard[y][x] == BoardValue::empty)
+                break;
 
-    if (amountOfMoves % 2 == 0) {
-        // Input
-        std::cout << "Give the top coordinate of the board: " << std::endl;
-        std::cin >> y;
-
-        std::cout << "Give the side coordinate of the board: " << std::endl;
-        std::cin >> x;
-        set(x, y, BoardValue::X);
-
-    } else {
-        // Input
-//        std::cout << "Give the top coordinate of the board: " << std::endl;
-//        std::cin >> y;
-//
-//        std::cout << "Give the side coordinate of the board: " << std::endl;
-//        std::cin >> x;
-//        set(x, y, BoardValue::O);
-        bestMove();
+            if (y == boardSize -  2)
+                return convertBoardValue(gameBoard[y][x]);
+        }
     }
+    return GameWinner::none;
+}
+
+GameWinner Board::checkRows() {
+    for (int y = 0; y < boardSize; y++) {
+        for (int x = 0; x < boardSize - 1; x++) {
+            if (gameBoard[y][x] != gameBoard[y][x+1] || gameBoard[y][x] == BoardValue::empty)
+                break;
+
+            if (x == boardSize - 2)
+                return convertBoardValue(gameBoard[y][x]);
+        }
+    }
+    return GameWinner::none;
+}
+
+
+GameWinner Board::convertBoardValue(BoardValue value) {
+    if (value == BoardValue::O)
+        return GameWinner::O;
+    else if (value == BoardValue::X)
+        return GameWinner::X;
 }

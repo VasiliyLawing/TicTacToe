@@ -1,15 +1,7 @@
-#include "iostream"
 
-#include "vector"
-#include "Board.hh"
-
+#include "Game.h"
 
 
 int main() {
-    Board board = Board(3);
-
-    while (board.isGameOver() == GameWinner::none) {
-        board.drawBoard();
-        board.turns();
-    }
+    Game(3);
 }
