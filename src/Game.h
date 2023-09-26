@@ -13,7 +13,7 @@ class Game {
     void playerTurn();
 
 public:
-    Game(int boardSize);
+    explicit Game(int boardSize);
     ~Game();
 
 };

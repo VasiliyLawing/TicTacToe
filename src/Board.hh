@@ -33,4 +33,5 @@ public:
 
     friend class Game;
     friend class Minimax;
+    friend class AlphaBeta;
 };

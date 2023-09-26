@@ -1,9 +1,11 @@
 #include "Game.h"
+#include "alphaBeta.h"
 
 
 Game::Game(int boardSize) {
     board = new Board(boardSize);
-    auto minimax = new Minimax(board, BoardValue::O);
+    //auto minimax = new Minimax(board, BoardValue::O);
+    auto minimax = new AlphaBeta(board, BoardValue::O);
 
     playerValue = BoardValue::X;
 

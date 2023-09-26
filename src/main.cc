@@ -3,5 +3,5 @@
 
 
 int main() {
-    Game(3);
+    Game(9);
 }
