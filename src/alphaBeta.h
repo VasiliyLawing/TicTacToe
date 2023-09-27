@@ -7,6 +7,7 @@ class AlphaBeta {
     Board *board;
     BoardValue value;
     BoardValue playerValue;
+    int limit;
 
 public:
     AlphaBeta(Board* gameBoard, BoardValue AIValue);

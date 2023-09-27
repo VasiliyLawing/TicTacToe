@@ -1,12 +1,20 @@
-//
-// Created by bily101 on 9/23/23.
-//
-
 #include "alphaBeta.h"
 
 AlphaBeta::AlphaBeta(Board* gameBoard, BoardValue AIValue) {
     board = gameBoard;
     value = AIValue;
+
+    if (board->boardSize == 5) {
+        limit = 6;
+    } else if (board->boardSize == 9) {
+        limit = 4;
+    } else if (board->boardSize == 3) {
+        limit = 9;
+    }
+
+    if (board->boardSize > 9) {
+        limit = 1;
+    }
 
     if (value == BoardValue::O)
         playerValue = BoardValue::X;
@@ -40,7 +48,9 @@ int AlphaBeta::minimax(int depth, bool isMaximizing, int alpha, int beta) {
     GameWinner result = board->isGameOver();
     if (result != GameWinner::none)
         return (int)result;
-
+    if (depth == limit) {
+        return 0;
+    }
 
     if (isMaximizing) {
         int bestVal = -1000;

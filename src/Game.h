@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Board.hh"
-#include "minimax.h"
 
 
 

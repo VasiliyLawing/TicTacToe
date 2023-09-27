@@ -8,8 +8,6 @@ add_executable(TickTackToeRevision src/main.cc
         src/Board.cc
         src/Game.cpp
         src/Game.h
-        src/minimax.cpp
-        src/minimax.h
         src/alphaBeta.cpp
         src/alphaBeta.h)
 
